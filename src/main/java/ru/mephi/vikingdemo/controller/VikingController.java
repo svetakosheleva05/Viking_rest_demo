@@ -11,7 +11,11 @@ import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/vikings")
@@ -49,7 +53,40 @@ public class VikingController {
     }
     
     @PostMapping("/post")
-    public void addViking(){
+    public void addRandomViking(){
         vikingListener.testAdd();
+    }
+    
+    @PostMapping
+    @Operation(summary = "Добавить нового викинга с конкретными параметрами")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Викинг успешно добавлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка")
+    })
+    public Viking addViking(@RequestBody Viking viking){
+        System.out.println("POST /api/vikings called with: " + viking);
+        return vikingService.createViking(viking);
+    }
+    
+    @DeleteMapping("/{index}")
+    @Operation(summary = "Удалить викинга по индексу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Викинг успешно удален"),
+            @ApiResponse(responseCode = "404", description = "Викинг с таким индексом не найден")
+    })
+    public void deleteViking(@PathVariable int index){
+        System.out.println("DELETE /api/vikings/" + index + " called");
+        vikingService.deleteViking(index);
+    }
+    
+    @PutMapping("/{index}")
+    @Operation(summary = "Обновить параметры викинга по индексу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Викинг успешно обновлен"),
+            @ApiResponse(responseCode = "404", description = "Викинг с таким индексом не найден")
+    })
+    public Viking updateViking(@PathVariable int index, @RequestBody Viking viking){
+        System.out.println("PUT /api/vikings/" + index + " called with: " + viking);
+        return vikingService.updateViking(index, viking);
     }
 }

@@ -27,7 +27,7 @@ public class VikingFactory {
                 createRandomEquipment()
         );
     }
-
+    
     private List<EquipmentItem> createRandomEquipment() {
         return List.of(
                 EquipmentFactory.createItem(),
