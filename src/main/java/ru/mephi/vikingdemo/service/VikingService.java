@@ -30,13 +30,11 @@ public class VikingService {
         return viking;
     }
     
-    // НОВЫЙ МЕТОД: Создание викинга из готового объекта
     public Viking createViking(Viking viking) {
         vikings.add(viking);
         return viking;
     }
     
-    // НОВЫЙ МЕТОД: Удаление викинга по индексу
     public void deleteViking(int index) {
         if (index >= 0 && index < vikings.size()) {
             vikings.remove(index);
@@ -45,7 +43,6 @@ public class VikingService {
         }
     }
     
-    // НОВЫЙ МЕТОД: Обновление викинга по индексу
     public Viking updateViking(int index, Viking updatedViking) {
         if (index >= 0 && index < vikings.size()) {
             vikings.set(index, updatedViking);
