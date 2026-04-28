@@ -55,10 +55,10 @@ public class VikingTableModel extends AbstractTableModel {
     }
     
     public void clearAll() {
-    int size = data.size();
-    if (size > 0) {
-        data.clear();
-        fireTableRowsDeleted(0, size - 1);
-    }
+        int size = data.size();
+        if (size > 0) {
+            data.clear();
+            fireTableDataChanged();
+        }
     }
 }

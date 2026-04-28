@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.mephi.vikingdemo.model.BeardStyle;
+import ru.mephi.vikingdemo.model.EquipmentItem;
+import ru.mephi.vikingdemo.model.HairColor;
 
 @RestController
 @RequestMapping("/api/vikings")
@@ -63,9 +66,15 @@ public class VikingController {
             @ApiResponse(responseCode = "200", description = "Викинг успешно добавлен"),
             @ApiResponse(responseCode = "400", description = "Ошибка")
     })
-    public Viking addViking(@RequestBody Viking viking){
-        System.out.println("POST /api/vikings called with: " + viking);
-        return vikingService.createViking(viking);
+    public Viking addViking(
+            @RequestParam String name,
+            @RequestParam int age,
+            @RequestParam int heightCm,
+            @RequestParam HairColor hairColor,
+            @RequestParam BeardStyle beardStyle,
+            @RequestParam List<EquipmentItem> equipment) {
+
+        return vikingService.addViking(name, age, heightCm, hairColor, beardStyle, equipment);
     }
     
     @DeleteMapping("/{index}")
@@ -81,12 +90,16 @@ public class VikingController {
     
     @PutMapping("/{index}")
     @Operation(summary = "Обновить параметры викинга по индексу")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Викинг успешно обновлен"),
-            @ApiResponse(responseCode = "404", description = "Викинг с таким индексом не найден")
-    })
-    public Viking updateViking(@PathVariable int index, @RequestBody Viking viking){
-        System.out.println("PUT /api/vikings/" + index + " called with: " + viking);
-        return vikingService.updateViking(index, viking);
+    public Viking updateViking(
+            @PathVariable int index,
+            @RequestParam String name,
+            @RequestParam int age,
+            @RequestParam int heightCm,
+            @RequestParam HairColor hairColor,
+            @RequestParam BeardStyle beardStyle,
+            @RequestParam List<EquipmentItem> equipment) {
+
+        System.out.println("PUT /api/vikings/" + index + " called");
+        return vikingService.updateViking(index, name, age, heightCm, hairColor, beardStyle, equipment);
     }
 }

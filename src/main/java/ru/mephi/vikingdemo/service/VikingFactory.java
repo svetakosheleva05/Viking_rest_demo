@@ -34,4 +34,17 @@ public class VikingFactory {
                 EquipmentFactory.createItem()
         );
     }
+    
+        public Viking createViking(String name, int age, int heightCm, 
+                               HairColor hairColor, BeardStyle beardStyle,
+                               List<EquipmentItem> equipment) {
+        
+        return new Viking(name, age, heightCm, hairColor, beardStyle, equipment);
+    }
+        
+    public Viking updateViking(Viking oldViking, String name, int age, int heightCm,
+                           HairColor hairColor, BeardStyle beardStyle,
+                           List<EquipmentItem> equipment) {
+    return new Viking(name, age, heightCm, hairColor, beardStyle, equipment);
+    }
 }

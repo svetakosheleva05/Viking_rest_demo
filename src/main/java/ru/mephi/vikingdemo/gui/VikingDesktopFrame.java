@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.List;
 
 
 public class VikingDesktopFrame extends JFrame {
@@ -39,24 +40,13 @@ public class VikingDesktopFrame extends JFrame {
 
         JButton createButton = new JButton("Create random viking");
         createButton.addActionListener(event -> onCreateViking());
-
-        JButton refreshButton = new JButton("Refresh from API");
-        refreshButton.addActionListener(event -> onRefreshFromApi());
-                
+       
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(createButton);
-        bottomPanel.add(refreshButton);
         add(bottomPanel, BorderLayout.SOUTH);
         
-        onRefreshFromApi();
     }
 
-        private void onRefreshFromApi() {
-        tableModel.clearAll();
-        for (Viking viking : vikingService.findAll()) {
-            tableModel.addViking(viking);
-        }
-        }
     private void onCreateViking() {
         Viking viking = vikingService.createRandomViking();
         tableModel.addViking(viking);
@@ -65,4 +55,12 @@ public class VikingDesktopFrame extends JFrame {
     public void addNewViking(Viking viking){
         tableModel.addViking(viking);
     }
+    
+    public void refreshFromService() {     
+        List<Viking> allVikings = vikingService.findAll();
+        tableModel.clearAll();
+        for (Viking viking : allVikings) {
+            tableModel.addViking(viking);
+        }
+ }
 }
