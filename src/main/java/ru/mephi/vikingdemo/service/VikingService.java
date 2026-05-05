@@ -5,23 +5,23 @@ import ru.mephi.vikingdemo.model.Viking;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.mephi.vikingdemo.controller.VikingListener;
+import org.springframework.context.ApplicationEventPublisher;
+import ru.mephi.vikingdemo.controller.VikingDataChangedEvent;
 import ru.mephi.vikingdemo.model.BeardStyle;
 import ru.mephi.vikingdemo.model.EquipmentItem;
 import ru.mephi.vikingdemo.model.HairColor;
+import ru.mephi.vikingdemo.model.VikingEntity;
 
 @Service
 public class VikingService {
     // каждый раз при изменении создаётся новая копия списка 
     private final CopyOnWriteArrayList<Viking> vikings = new CopyOnWriteArrayList<>();
     private final VikingFactory vikingFactory;
-    private final VikingListener vikingListener;
+    private final ApplicationEventPublisher eventPublisher;
     
-    @Autowired
-    public VikingService(VikingFactory vikingFactory, VikingListener vikingListener) {
+    public VikingService(VikingFactory vikingFactory, ApplicationEventPublisher eventPublisher) {
         this.vikingFactory = vikingFactory;
-        this.vikingListener = vikingListener;
+        this.eventPublisher = eventPublisher;
     }
     
     public List<Viking> findAll() {
@@ -29,43 +29,44 @@ public class VikingService {
     }
 
     public Viking createRandomViking() {
-        
-
         Viking viking = vikingFactory.createRandomViking();
-
         vikings.add(viking);
-        vikingListener.onDataChanged();
+        eventPublisher.publishEvent(new VikingDataChangedEvent(this));
         return viking;
     }
     
-    public Viking addViking(String name, int age, int heightCm, 
-                               HairColor hairColor, BeardStyle beardStyle,
-                               List<EquipmentItem> equipment) {
-        Viking viking = vikingFactory.createViking(name, age, heightCm, hairColor, beardStyle, equipment);
+    public Viking addViking(VikingEntity entity) {
+        Viking viking = vikingFactory.createViking(entity);
         vikings.add(viking);
-        vikingListener.onDataChanged();
+        eventPublisher.publishEvent(new VikingDataChangedEvent(this));
         return viking;
     }
     
     public void deleteViking(int index) {
         if (index >= 0 && index < vikings.size()) {
             vikings.remove(index);
-            vikingListener.onDataChanged();
+            eventPublisher.publishEvent(new VikingDataChangedEvent(this));
         } else {
             throw new IndexOutOfBoundsException("Viking not found at index: " + index);
         }
     }
     
-    public Viking updateViking(int index, String name, int age, int heightCm,
-                               HairColor hairColor, BeardStyle beardStyle,
-                               List<EquipmentItem> equipment) {
+    public Viking updateViking(int index, VikingEntity entity) {
         if (index >= 0 && index < vikings.size()) {
-            Viking updatedViking = vikingFactory.createViking(name, age, heightCm, hairColor, beardStyle, equipment);
+            Viking old = vikings.get(index);
+            Viking updatedViking = vikingFactory.updateViking(old, entity);
+            
             vikings.set(index, updatedViking);
-            vikingListener.onDataChanged();
+            eventPublisher.publishEvent(new VikingDataChangedEvent(this));
             return updatedViking;
         } else {
             throw new IndexOutOfBoundsException("Viking not found at index: " + index);
+        }
+    }
+
+    public void testAdd() {
+        for (int i = 0; i <= 1; i++) {
+            createRandomViking();
         }
     }
 }

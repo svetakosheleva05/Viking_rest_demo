@@ -38,5 +38,4 @@ public class EquipmentFactory {
             return "Legendary";    // 3%
         }
     }
-    
 }

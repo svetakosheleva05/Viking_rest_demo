@@ -10,6 +10,7 @@ import ru.mephi.vikingdemo.model.EquipmentItem;
 import ru.mephi.vikingdemo.model.HairColor;
 import ru.mephi.vikingdemo.model.Viking;
 import java.util.Locale;
+import ru.mephi.vikingdemo.model.VikingEntity;
 
 @Component
 public class VikingFactory {
@@ -35,16 +36,25 @@ public class VikingFactory {
         );
     }
     
-        public Viking createViking(String name, int age, int heightCm, 
-                               HairColor hairColor, BeardStyle beardStyle,
-                               List<EquipmentItem> equipment) {
-        
-        return new Viking(name, age, heightCm, hairColor, beardStyle, equipment);
+    public Viking createViking(VikingEntity entity) {
+        return new Viking(
+                entity.name(),
+                entity.age(),
+                entity.heightCm(),
+                entity.hairColor(),
+                entity.beardStyle(),
+                entity.equipment()
+        );
     }
-        
-    public Viking updateViking(Viking oldViking, String name, int age, int heightCm,
-                           HairColor hairColor, BeardStyle beardStyle,
-                           List<EquipmentItem> equipment) {
-    return new Viking(name, age, heightCm, hairColor, beardStyle, equipment);
-    }
+    
+    public Viking updateViking(Viking old, VikingEntity newData) {
+    return new Viking(
+            newData.name() != null ? newData.name() : old.name(),
+            newData.age() > 0 ? newData.age() : old.age(),
+            newData.heightCm() > 0 ? newData.heightCm() : old.heightCm(),
+            newData.hairColor() != null ? newData.hairColor() : old.hairColor(),
+            newData.beardStyle() != null ? newData.beardStyle() : old.beardStyle(),
+            newData.equipment() != null ? newData.equipment() : old.equipment()
+    );
+}
 }

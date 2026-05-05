@@ -9,16 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.service.VikingService;
-
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.mephi.vikingdemo.model.BeardStyle;
-import ru.mephi.vikingdemo.model.EquipmentItem;
-import ru.mephi.vikingdemo.model.HairColor;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.mephi.vikingdemo.model.VikingEntity;
 
 @RestController
 @RequestMapping("/api/vikings")
@@ -26,11 +23,9 @@ import ru.mephi.vikingdemo.model.HairColor;
 public class VikingController {
 
     private final VikingService vikingService;
-    private VikingListener vikingListener;
 
-    public VikingController(VikingService vikingService, VikingListener vikingListener) {
+    public VikingController(VikingService vikingService) {
         this.vikingService = vikingService;
-        this.vikingListener = vikingListener;
     }
     
     @GetMapping
@@ -57,7 +52,7 @@ public class VikingController {
     
     @PostMapping("/post")
     public void addRandomViking(){
-        vikingListener.testAdd();
+        vikingService.testAdd();
     }
     
     @PostMapping
@@ -66,15 +61,8 @@ public class VikingController {
             @ApiResponse(responseCode = "200", description = "Викинг успешно добавлен"),
             @ApiResponse(responseCode = "400", description = "Ошибка")
     })
-    public Viking addViking(
-            @RequestParam String name,
-            @RequestParam int age,
-            @RequestParam int heightCm,
-            @RequestParam HairColor hairColor,
-            @RequestParam BeardStyle beardStyle,
-            @RequestParam List<EquipmentItem> equipment) {
-
-        return vikingService.addViking(name, age, heightCm, hairColor, beardStyle, equipment);
+    public Viking addViking(@RequestBody VikingEntity entity) {
+        return vikingService.addViking(entity);
     }
     
     @DeleteMapping("/{index}")
@@ -92,14 +80,9 @@ public class VikingController {
     @Operation(summary = "Обновить параметры викинга по индексу")
     public Viking updateViking(
             @PathVariable int index,
-            @RequestParam String name,
-            @RequestParam int age,
-            @RequestParam int heightCm,
-            @RequestParam HairColor hairColor,
-            @RequestParam BeardStyle beardStyle,
-            @RequestParam List<EquipmentItem> equipment) {
+            @RequestBody VikingEntity entity) {
 
         System.out.println("PUT /api/vikings/" + index + " called");
-        return vikingService.updateViking(index, name, age, heightCm, hairColor, beardStyle, equipment);
+        return vikingService.updateViking(index, entity);
     }
 }
